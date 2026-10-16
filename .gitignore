@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Data files (M5 is huge, never commit)
+data/raw/
+data/processed/
+*.csv
+*.parquet
+
+# Model artifacts and environment secrets
+models/*.pkl
+*.pkl
+.env
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
