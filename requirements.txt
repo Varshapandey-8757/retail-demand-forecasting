@@ -12,3 +12,4 @@ prophet
 streamlit
 pytest
 httpx
+pydantic
