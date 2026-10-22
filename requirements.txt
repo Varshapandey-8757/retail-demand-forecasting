@@ -1,0 +1,15 @@
+
+fastapi
+uvicorn[standard]
+pydantic-settings
+python-dotenv
+google-cloud-bigquery
+pandas
+numpy
+scikit-learn
+lightgbm
+prophet
+streamlit
+pytest
+httpx
+pydantic
