@@ -13,4 +13,3 @@ streamlit
 pytest
 httpx
 pydantic
-varsha
