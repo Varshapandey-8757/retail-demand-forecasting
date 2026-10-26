@@ -62,6 +62,14 @@ daily = daily.merge(
     validate="many_to_one"
 )
 
+# Calendar join verify karo
+if daily["date"].isnull().any():
+    raise ValueError(
+        "Some sales dates were not matched with the calendar."
+    )
+
+print("Calendar dates matched successfully.")
+
 # 6. Product prices connect karo
 prices = pd.read_csv(prices_file)
 
@@ -87,6 +95,12 @@ print(
     daily[["date", "sales", "sell_price"]]
     .isnull()
     .sum()
+)
+
+print("\nMissing values percentage:")
+print(
+    (daily[["date", "sales", "sell_price"]].isnull().mean() * 100)
+    .round(2)
 )
 
 print("\nSample data:")
