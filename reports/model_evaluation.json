@@ -1,0 +1,14 @@
+{
+  "model": "RandomForestRegressor",
+  "dataset": "retail_sales_daily_top20.csv",
+  "series_count": 20,
+  "train_records": 37140,
+  "test_records": 560,
+  "train_end_date": "2016-03-27",
+  "test_start_date": "2016-03-28",
+  "test_end_date": "2016-04-24",
+  "mae": 10.568860079900258,
+  "rmse": 14.766437255561291,
+  "wape_percent": 19.73906631785,
+  "note": "Baseline model using a development sample of top 20 product-store series. Evaluation uses historical lag features; it is not a recursive 28-day-ahead forecast simulation."
+}

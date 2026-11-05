@@ -1,26 +1,31 @@
-# Virtual environment
-venv/
-.venv/
-env/
 
-# Python cache
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+.venv/
+venv/
+
+# Data and model artifacts
+data/raw/*
+data/processed/*
+models/*
+!models/README.md
+
+# Jupyter
 .ipynb_checkpoints/
 
-# Data files (M5 is huge, never commit)
-data/raw/
-data/processed/
-*.csv
-*.parquet
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Model artifacts and environment secrets
-models/*.pkl
-*.pkl
-.env
-
-# OS / Editor junk
-.DS_Store
-Thumbs.db
+# IDE
 .vscode/
