@@ -1,0 +1,16 @@
+{
+  "model": "Prophet with US Holidays",
+  "dataset": "retail_sales_daily_top20.csv",
+  "series_count": 20,
+  "train_end_date": "2016-03-27",
+  "test_start_date": "2016-03-28",
+  "test_end_date": "2016-04-24",
+  "mae": 13.077761632918824,
+  "rmse": 18.472787011947418,
+  "wape_percent": 24.424848300542095,
+  "improvements": {
+    "baseline_rmse": 18.529,
+    "new_rmse": 18.472787011947418,
+    "rmse_delta": -0.05621298805258235
+  }
+}
