@@ -6,7 +6,7 @@ from app.api.routes.forecasts import router as forecasts_router
 from app.api.routes.inventory import router as inventory_router
 from app.api.routes.predictions import router as predictions_router
 from app.api.routes.forecast_inventory import router as forecast_inventory_router
-
+from app.api.routes.sales import router as sales_router
 app = FastAPI(
     title="Retail Demand Forecasting API",
     description=(
@@ -21,3 +21,4 @@ app.include_router(forecasts_router)
 app.include_router(inventory_router)
 app.include_router(predictions_router)
 app.include_router(forecast_inventory_router)
+app.include_router(sales_router)
