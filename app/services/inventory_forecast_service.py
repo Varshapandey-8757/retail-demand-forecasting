@@ -1,3 +1,5 @@
+from sqlalchemy.orm import Session
+
 from app.schemas.inventory_forecast import (
     InventoryForecastRequest,
     InventoryForecastResponse,
@@ -7,12 +9,17 @@ from app.schemas.prediction import DemandPredictionRequest
 from app.services.prediction_service import generate_prediction
 from app.services.inventory_service import calculate_reorder_quantity
 
+from app.repositories.inventory_forecast_repository import (
+    save_inventory_forecast,
+)
+
 
 def generate_inventory_recommendation(
     request: InventoryForecastRequest,
+    db: Session,
 ) -> InventoryForecastResponse:
 
-    # Step 1: Prepare the ML prediction request
+    # Step 1: Prepare ML prediction request
     prediction_request = DemandPredictionRequest(
         store_id=request.store_id,
         item_id=request.item_id,
@@ -37,8 +44,8 @@ def generate_inventory_recommendation(
         incoming_stock=request.incoming_stock,
     )
 
-    # Step 4: Return combined result
-    return InventoryForecastResponse(
+    # Step 4: Prepare API response
+    response = InventoryForecastResponse(
         store_id=request.store_id,
         item_id=request.item_id,
         predicted_units=prediction.predicted_units,
@@ -48,3 +55,8 @@ def generate_inventory_recommendation(
         recommended_order_quantity=round(reorder_quantity, 2),
         model_version=prediction.model_version,
     )
+
+    # Step 5: Save result in PostgreSQL
+    save_inventory_forecast(db, response)
+
+    return response

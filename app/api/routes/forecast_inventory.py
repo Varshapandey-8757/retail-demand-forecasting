@@ -1,4 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
 
 from app.schemas.inventory_forecast import (
     InventoryForecastRequest,
@@ -20,10 +24,13 @@ router = APIRouter(
     "/forecast-recommendations",
     response_model=InventoryForecastResponse,
 )
-def forecast_inventory(request: InventoryForecastRequest):
+def forecast_inventory(
+    request: InventoryForecastRequest,
+    db: Session = Depends(get_db),
+):
 
     try:
-        return generate_inventory_recommendation(request)
+        return generate_inventory_recommendation(request, db)
 
     except FileNotFoundError:
         raise HTTPException(
@@ -35,4 +42,10 @@ def forecast_inventory(request: InventoryForecastRequest):
         raise HTTPException(
             status_code=422,
             detail=str(error),
+        )
+
+    except SQLAlchemyError:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to save inventory forecast in database.",
         )
