@@ -29,3 +29,9 @@ models/*
 
 # IDE
 .vscode/
+
+# dbt generated files
+logs/
+retail_demand_dbt/target/
+retail_demand_dbt/logs/
+retail_demand_dbt/dbt_packages/
