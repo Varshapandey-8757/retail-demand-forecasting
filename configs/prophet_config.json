@@ -1,0 +1,28 @@
+{
+  "model_name": "Prophet",
+  "model_version": "prophet-v1",
+  "data_path": "data/processed/retail_sales_daily_top20.csv",
+  "series_count": 20,
+  "validation_window": {
+    "train_end_date": "2016-03-27",
+    "test_start_date": "2016-03-28",
+    "test_end_date": "2016-04-24",
+    "horizon_days": 28
+  },
+  "future_forecast": {
+    "horizon_days": 30
+  },
+  "hyperparameters": {
+    "yearly_seasonality": true,
+    "weekly_seasonality": true,
+    "daily_seasonality": false,
+    "seasonality_mode": "additive"
+  },
+  "output_schema": [
+    "store_id",
+    "item_id",
+    "forecast_date",
+    "predicted_units",
+    "model_version"
+  ]
+}

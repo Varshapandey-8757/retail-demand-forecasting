@@ -1,34 +1,56 @@
-<<<<<<< HEAD
 # Retail Demand Forecasting & Inventory Optimization
 
-## Project Overview
+Retail Demand Forecasting & Inventory Optimization platform built with Python, FastAPI, PostgreSQL, dbt, Streamlit, and Machine Learning (Prophet & Random Forest).
 
-An analytics platform that forecasts retail product demand
-and generates inventory replenishment recommendations.
+---
 
-## Technology Stack
+## 🏗️ Project Architecture
 
-- Python
-- SQL
-- Google BigQuery
-- dbt
-- Prophet and LightGBM
-- FastAPI
-- Streamlit
+```text
+Raw Sales Data (Kaggle M5)
+        │
+        ▼
+PostgreSQL / dbt Data Warehouse (retail_demand_dbt/)
+        │
+        ├──────────────────────────┐
+        ▼                          ▼
+Prophet Forecasting (Model A)   Random Forest Baseline
+(pipelines/generate_prophet_forecasts.py)
+        │                          │
+        └─────────────┬────────────┘
+                      ▼
+             FastAPI REST Backend (app/)
+                      │
+                      ▼
+         Streamlit Analytics Dashboard (dashboard/)
+```
 
-## Team Structure
+---
 
-- Member 1: Backend and Team Leader
-- Member 2: Data Engineering and ETL
-- Member 3: SQL and dbt
-- Member 4: Prophet Forecasting
-- Member 5: LightGBM Forecasting
-- Member 6: Dashboard and Inventory Optimization
+## 👥 Team & Roles
 
-## Project Status
+- **Varsha Pandey (Lead)**: FastAPI backend, PostgreSQL ETL, Random Forest baseline, Streamlit dashboard.
+- **Ravi (Model A Lead)**: Prophet demand forecasting pipeline, US holiday modeling, 30-day forecast generation, unit test suites.
+- **Abhishek**: dbt models (staging & marts).
+- **Darshan**: Data warehouse ingestion.
+- **Harshita**: LightGBM model.
+- **Sairaj**: Dashboard and inventory optimization workflow.
 
-Initial repository setup.
-=======
-# retail-demand-forecasting
-Retail Demand Forecasting &amp; Inventory Optimization using Python, SQL, BigQuery, dbt, machine learning, FastAPI, and Streamlit.
->>>>>>> origin/main
+---
+
+## 🚀 Prophet Forecasting Module
+
+- **Configuration**: `configs/prophet_config.json`
+- **Pipelines**: `pipelines/generate_prophet_forecasts.py`
+- **Notebooks**: `notebooks/05_prophet_baseline.py`, `notebooks/06_prophet_with_holidays.py`, `notebooks/07_compare_models.py`
+- **Reports**: `reports/prophet_future_30d_forecasts.csv`, `reports/model_comparison_report.json`
+- **Documentation**: [docs/prophet_forecasting_guide.md](docs/prophet_forecasting_guide.md)
+
+### Running the Prophet Pipeline & Tests:
+```powershell
+# Generate 30-day forward predictions
+python pipelines/generate_prophet_forecasts.py
+
+# Run unit tests (9 passed)
+python -m pytest tests/test_prophet_forecasts.py tests/test_forecast_service.py -v
+```

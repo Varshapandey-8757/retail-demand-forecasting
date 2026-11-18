@@ -1,0 +1,12 @@
+{
+  "model": "Prophet",
+  "dataset": "retail_sales_daily_top20.csv",
+  "series_count": 20,
+  "train_end_date": "2016-03-27",
+  "test_start_date": "2016-03-28",
+  "test_end_date": "2016-04-24",
+  "mae": 13.115487360468657,
+  "rmse": 18.528630476878625,
+  "wape_percent": 24.49530723673442,
+  "note": "Prophet baseline with yearly and weekly seasonality on top 20 series."
+}
