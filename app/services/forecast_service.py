@@ -1,15 +1,40 @@
-
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from pathlib import Path
+import pandas as pd
 
 from app.schemas.forecast import ForecastRecord
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+PROPHET_FORECAST_FILE = BASE_DIR / "reports" / "prophet_future_30d_forecasts.csv"
 
 
 def get_forecasts(
     store_id: str | None = None,
     item_id: str | None = None,
 ) -> list[ForecastRecord]:
-    # Temporary demonstration data.
-    # Replace this with model-generated forecasts or warehouse data later.
+    # Check if real Prophet 30-day forecast file exists
+    if PROPHET_FORECAST_FILE.exists():
+        df = pd.read_csv(PROPHET_FORECAST_FILE)
+
+        if store_id:
+            df = df[df["store_id"] == store_id]
+
+        if item_id:
+            df = df[df["item_id"] == item_id]
+
+        records = [
+            ForecastRecord(
+                store_id=row["store_id"],
+                item_id=row["item_id"],
+                forecast_date=datetime.strptime(str(row["forecast_date"]), "%Y-%m-%d").date(),
+                predicted_units=float(row["predicted_units"]),
+                model_version=str(row["model_version"]),
+            )
+            for _, row in df.iterrows()
+        ]
+        return records
+
+    # Fallback to demonstration data if pipeline has not been executed yet
     today = date.today()
 
     records = [
