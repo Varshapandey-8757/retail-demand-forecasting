@@ -1,0 +1,36 @@
+{
+  "dataset": "retail_sales_daily_top20.csv",
+  "validation_window": {
+    "start": "2016-03-28",
+    "end": "2016-04-24",
+    "days": 28
+  },
+  "models": {
+    "RandomForestRegressor": {
+      "type": "Supervised ML with Lag Features",
+      "mae": 10.569,
+      "rmse": 14.766,
+      "wape_percent": 19.74,
+      "note": "Evaluated using historical lag features; requires lagged sales inputs."
+    },
+    "Prophet_Baseline": {
+      "type": "Pure Time Series (Yearly + Weekly Seasonality)",
+      "mae": 13.115,
+      "rmse": 18.529,
+      "wape_percent": 24.5,
+      "note": "Independent time series forecasting without needing actual daily lag inputs."
+    },
+    "Prophet_With_US_Holidays": {
+      "type": "Pure Time Series (Seasonality + US Country Holidays)",
+      "mae": 13.078,
+      "rmse": 18.473,
+      "wape_percent": 24.42,
+      "note": "Best pure forecasting model. Captures national sales spikes and holiday dips."
+    }
+  },
+  "key_takeaways": [
+    "Prophet operates as a true forward-looking forecaster (no daily actual lag dependencies).",
+    "Adding US country holidays reduced Prophet RMSE from 18.529 to 18.473 and WAPE to 24.42%.",
+    "Prophet forecasts serve the 30-day forward demand directly into the inventory restock pipeline."
+  ]
+}
