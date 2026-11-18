@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_daily_sales
+    description: "Clean staging view for daily Walmart retail sales"
+
+    columns:
+      - name: id
+        description: "Unique database record ID"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: series_id
+        data_tests:
+          - not_null
+
+      - name: item_id
+        data_tests:
+          - not_null
+
+      - name: store_id
+        data_tests:
+          - not_null
+
+      - name: date
+        data_tests:
+          - not_null
+
+      - name: sales
+        data_tests:
+          - not_null

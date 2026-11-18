@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: retail
+    schema: public
+    description: "Raw retail sales data loaded from the M5 Walmart dataset"
+    tables:
+      - name: daily_sales
+        description: "Daily sales records for selected Walmart product-store combinations"

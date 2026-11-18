@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: mart_daily_sales
+    description: "Daily sales aggregated by product and store"
+    columns:
+      - name: date
+        data_tests:
+          - not_null
+      - name: store_id
+        data_tests:
+          - not_null
+      - name: item_id
+        data_tests:
+          - not_null
+      - name: total_units_sold
+        data_tests:
+          - not_null
+
+  - name: mart_weekly_sales
+    description: "Weekly sales aggregated by product and store"
+    columns:
+      - name: week_start
+        data_tests:
+          - not_null
+      - name: store_id
+        data_tests:
+          - not_null
+      - name: item_id
+        data_tests:
+          - not_null
+      - name: total_units_sold
+        data_tests:
+          - not_null
+
+  - name: mart_monthly_sales
+    description: "Monthly sales aggregated by product and store"
+    columns:
+      - name: month_start
+        data_tests:
+          - not_null
+      - name: store_id
+        data_tests:
+          - not_null
+      - name: item_id
+        data_tests:
+          - not_null
+      - name: total_units_sold
+        data_tests:
+          - not_null
