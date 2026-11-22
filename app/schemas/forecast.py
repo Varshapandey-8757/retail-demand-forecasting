@@ -60,4 +60,4 @@ class WhatIfResponse(BaseModel):
     daily: list[WhatIfDay]
 
 
-GroupBy = Literal["series", "store", "dept", "category"]sss
+GroupBy = Literal["series", "store", "dept", "category"]
