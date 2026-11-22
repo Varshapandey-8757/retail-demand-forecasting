@@ -2,31 +2,62 @@ version: 2
 
 models:
   - name: stg_daily_sales
-    description: "Clean staging view for daily Walmart retail sales"
-
+    description: "Clean staging view over raw daily sales (one row per item-store-day)."
     columns:
       - name: id
-        description: "Unique database record ID"
-        data_tests:
-          - unique
-          - not_null
-
+        description: "Surrogate key assigned by the database."
+        data_tests: [unique, not_null]
       - name: series_id
-        data_tests:
-          - not_null
-
+        description: "M5 series identifier, item_id + store_id + '_validation'."
+        data_tests: [not_null]
       - name: item_id
+        description: "Product identifier (e.g. FOODS_3_090)."
+        data_tests: [not_null]
+      - name: dept_id
+        description: "Department the item belongs to (e.g. FOODS_3)."
+        data_tests: [not_null]
+      - name: cat_id
+        description: "Category: FOODS, HOBBIES or HOUSEHOLD."
         data_tests:
           - not_null
-
+          - accepted_values:
+              arguments:
+                values: ["FOODS", "HOBBIES", "HOUSEHOLD"]
       - name: store_id
-        data_tests:
-          - not_null
-
+        description: "Store identifier (e.g. CA_1)."
+        data_tests: [not_null]
+      - name: state_id
+        description: "US state of the store: CA, TX or WI."
       - name: date
-        data_tests:
-          - not_null
-
+        description: "Calendar date of the sales."
+        data_tests: [not_null]
       - name: sales
+        description: "Units sold that day."
+        data_tests: [not_null]
+      - name: sell_price
+        description: "Weekly sell price in USD. Null before the item was first sold."
+
+  - name: stg_demand_forecasts
+    description: "Forecasts and backtests written by the Prophet and LightGBM pipelines."
+    columns:
+      - name: run_id
+        description: "One pipeline execution, e.g. lightgbm-20261119T123954."
+        data_tests: [not_null]
+      - name: model_name
+        description: "Model that produced the row."
         data_tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: ["lightgbm", "prophet"]
+      - name: forecast_date
+        description: "Day being predicted."
+        data_tests: [not_null]
+      - name: predicted_units
+        description: "Predicted units sold (never negative)."
+        data_tests: [not_null]
+      - name: actual_units
+        description: "Actual units sold - only set for backtest rows."
+      - name: is_backtest
+        description: "True for past days used to measure accuracy, false for the future forecast."
+        data_tests: [not_null]

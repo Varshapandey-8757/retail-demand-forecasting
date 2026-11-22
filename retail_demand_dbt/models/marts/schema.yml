@@ -2,49 +2,71 @@ version: 2
 
 models:
   - name: mart_daily_sales
-    description: "Daily sales aggregated by product and store"
+    description: "Daily units, revenue and average price per item-store."
     columns:
       - name: date
-        data_tests:
-          - not_null
+        description: "Sales date."
+        data_tests: [not_null]
       - name: store_id
-        data_tests:
-          - not_null
+        description: "Store identifier."
+        data_tests: [not_null]
       - name: item_id
-        data_tests:
-          - not_null
+        description: "Product identifier."
+        data_tests: [not_null]
       - name: total_units_sold
-        data_tests:
-          - not_null
+        description: "Units sold that day."
+        data_tests: [not_null]
+      - name: total_revenue
+        description: "units x sell price (USD)."
 
   - name: mart_weekly_sales
-    description: "Weekly sales aggregated by product and store"
+    description: "Weekly units, revenue and revenue-weighted average price per item-store."
     columns:
       - name: week_start
-        data_tests:
-          - not_null
+        description: "First day of the week (see the model comment for the warehouse's week start)."
+        data_tests: [not_null]
       - name: store_id
-        data_tests:
-          - not_null
+        data_tests: [not_null]
       - name: item_id
-        data_tests:
-          - not_null
+        data_tests: [not_null]
       - name: total_units_sold
-        data_tests:
-          - not_null
+        data_tests: [not_null]
 
   - name: mart_monthly_sales
-    description: "Monthly sales aggregated by product and store"
+    description: "Monthly units, revenue and revenue-weighted average price per item-store."
     columns:
       - name: month_start
-        data_tests:
-          - not_null
+        description: "First day of the month."
+        data_tests: [not_null]
       - name: store_id
-        data_tests:
-          - not_null
+        data_tests: [not_null]
       - name: item_id
-        data_tests:
-          - not_null
+        data_tests: [not_null]
       - name: total_units_sold
+        data_tests: [not_null]
+
+  - name: mart_department_weekly_sales
+    description: "Weekly units and revenue per store and department."
+    columns:
+      - name: week_start
+        data_tests: [not_null]
+      - name: store_id
+        data_tests: [not_null]
+      - name: dept_id
+        data_tests: [not_null]
+      - name: total_units_sold
+        data_tests: [not_null]
+
+  - name: mart_forecast_accuracy
+    description: "Backtest accuracy (WAPE) per model run, store and department."
+    columns:
+      - name: model_name
         data_tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: ["lightgbm", "prophet"]
+      - name: run_id
+        data_tests: [not_null]
+      - name: wape
+        description: "Weighted absolute percentage error as a fraction (0.20 = 20%)."
