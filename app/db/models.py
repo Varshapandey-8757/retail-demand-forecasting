@@ -1,7 +1,7 @@
-
 from datetime import date, datetime
 
 from sqlalchemy import (
+    Boolean,
     Date,
     DateTime,
     Float,
@@ -82,4 +82,42 @@ class DailySales(Base):
         UniqueConstraint("series_id", "d", name="uq_daily_sales_series_day"),
         Index("ix_daily_sales_date", "date"),
         Index("ix_daily_sales_store_item", "store_id", "item_id"),
+    )
+
+
+class DemandForecast(Base):
+    """Model forecasts and backtests (predicted vs actual), one row per series-day."""
+
+    __tablename__ = "demand_forecasts"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    run_id: Mapped[str] = mapped_column(String(60), nullable=False)
+    model_name: Mapped[str] = mapped_column(String(30), nullable=False)
+    model_version: Mapped[str] = mapped_column(String(60), nullable=False)
+
+    series_id: Mapped[str] = mapped_column(String(150), nullable=False)
+    store_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    item_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    dept_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    cat_id: Mapped[str] = mapped_column(String(50), nullable=False)
+
+    forecast_date: Mapped[date] = mapped_column(Date, nullable=False)
+    predicted_units: Mapped[float] = mapped_column(Float, nullable=False)
+    # Filled only for backtest rows (days that already happened).
+    actual_units: Mapped[float | None] = mapped_column(Float, nullable=True)
+    is_backtest: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "run_id", "model_name", "series_id", "forecast_date",
+            name="uq_demand_forecast_run_series_day",
+        ),
+        Index("ix_demand_forecast_model_date", "model_name", "forecast_date"),
+        Index("ix_demand_forecast_store_item", "store_id", "item_id"),
     )

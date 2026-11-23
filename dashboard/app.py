@@ -3,6 +3,11 @@ import streamlit as st
 import pandas as pd
 import httpx
 
+from dashboard_auth import API_BASE_URL, api_headers, require_login
+
+
+require_login()
+
 
 # --------------------------------------------------
 # PAGE CONFIGURATION
@@ -19,7 +24,6 @@ st.set_page_config(
 # API CONFIGURATION
 # --------------------------------------------------
 
-API_BASE_URL = "http://127.0.0.1:8000"
 SALES_API_URL = f"{API_BASE_URL}/api/v1/sales"
 
 
@@ -56,6 +60,7 @@ def fetch_sales_data():
 
                 response = client.get(
                     SALES_API_URL,
+                    headers=api_headers(),
                     params={
                         "limit": limit,
                         "offset": offset

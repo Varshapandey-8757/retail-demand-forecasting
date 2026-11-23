@@ -1,0 +1,23 @@
+name: "retail_demand_dbt"
+version: "1.0.0"
+
+# Connection settings live in profiles.yml (see profiles.yml.example)
+profile: "retail_demand_dbt"
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  retail_demand_dbt:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

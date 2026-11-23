@@ -1,0 +1,25 @@
+# Copy to ~/.dbt/profiles.yml (or set DBT_PROFILES_DIR) and fill in your values.
+retail_demand_dbt:
+  target: postgres
+  outputs:
+
+    # Current setup: the PostgreSQL database used by the API
+    postgres:
+      type: postgres
+      host: localhost
+      port: 5432
+      user: postgres
+      password: "{{ env_var('DBT_POSTGRES_PASSWORD') }}"
+      dbname: retail_forecasting_db
+      schema: analytics          # dbt writes staging views and marts here
+      threads: 4
+
+    # Google BigQuery (requires `pip install dbt-bigquery` and
+    # `python -m pipelines.load_to_bigquery`; set DBT_SOURCE_SCHEMA=<your dataset>)
+    bigquery:
+      type: bigquery
+      method: oauth              # after: gcloud auth application-default login
+      project: "{{ env_var('GOOGLE_CLOUD_PROJECT') }}"
+      dataset: retail_analytics_dbt
+      threads: 4
+      location: US

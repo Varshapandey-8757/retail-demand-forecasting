@@ -2,8 +2,16 @@ version: 2
 
 sources:
   - name: retail
-    schema: public
-    description: "Raw retail sales data loaded from the M5 Walmart dataset"
+    # PostgreSQL: public. For BigQuery set DBT_SOURCE_SCHEMA to your dataset.
+    schema: "{{ env_var('DBT_SOURCE_SCHEMA', 'public') }}"
+    description: "Raw tables written by the Python ETL and forecasting pipelines."
     tables:
       - name: daily_sales
-        description: "Daily sales records for selected Walmart product-store combinations"
+        description: >
+          Daily sales for selected Walmart item-store series from the M5 dataset,
+          joined with calendar events, SNAP flags and weekly sell prices.
+          Loaded by pipelines/load_sales_to_postgres.py.
+      - name: demand_forecasts
+        description: >
+          Output of the Prophet and LightGBM pipelines: backtest rows (with
+          actual_units) and the next-30-day forecast (actual_units is null).

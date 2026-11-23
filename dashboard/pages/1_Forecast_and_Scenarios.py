@@ -112,7 +112,10 @@ with tab_forecast:
         m1, m2, m3 = st.columns(3)
         m1.metric("Forecast next 30 days (units)", f"{total.sum():,.0f}")
         m2.metric("Average per day", f"{total.mean():,.1f}")
-        m3.metric("Peak day", f"{total.idxmax():%d %b}  ({total.max():,.0f})")
+        if total.empty:
+            m3.metric("Peak day", "No future forecast")
+        else:
+            m3.metric("Peak day", f"{total.idxmax():%d %b}  ({total.max():,.0f})")
 
         wide = df.pivot_table(index="forecast_date", columns="label",
                               values="predicted_units", aggfunc="sum")

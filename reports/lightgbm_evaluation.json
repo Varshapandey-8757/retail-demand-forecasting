@@ -1,0 +1,23 @@
+{
+  "model": "LightGBM",
+  "validation": {
+    "start": "2016-03-26",
+    "end": "2016-04-24",
+    "horizon_days": 30,
+    "note": "True 30-day-ahead evaluation: no feature uses sales from the last 30 days before the target day."
+  },
+  "lightgbm": {
+    "mae": 13.816052775577724,
+    "rmse": 20.11809596548056,
+    "wape_percent": 24.776231888775882,
+    "rows": 600
+  },
+  "baseline_same_weekday_mean": {
+    "mae": 12.823333333333334,
+    "rmse": 17.8532560055582,
+    "wape_percent": 22.995994978779365,
+    "rows": 600
+  },
+  "series_count": 20,
+  "best_rounds": 192
+}
