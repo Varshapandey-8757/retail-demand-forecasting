@@ -8,6 +8,7 @@ from app.api.routes.forecast_inventory import router as forecast_inventory_route
 from app.api.routes.restock import router as restock_router
 from app.api.routes.sales import router as sales_router
 from app.security import require_admin, require_viewer
+from app.db.database import Base, engine
 
 app = FastAPI(
     title="Retail Demand Forecasting API",
@@ -17,6 +18,12 @@ app = FastAPI(
     ),
     version="0.2.0",
 )
+
+
+@app.on_event("startup")
+def create_database_tables() -> None:
+    """Create local SQLite tables automatically when no warehouse is configured."""
+    Base.metadata.create_all(bind=engine)
 
 # Public: health check only.
 app.include_router(health_router)

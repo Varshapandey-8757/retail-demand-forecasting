@@ -39,7 +39,8 @@ def read_forecasts(
         include_backtest=include_backtest, limit=limit, offset=offset,
     )
     return ForecastResponse(
-        source="database", model_name=model_name, run_id=run_id,
+        source="demo" if run_id == "demo" else "database",
+        model_name=model_name, run_id=run_id,
         group_by=group_by, forecasts=forecasts,
     )
 

@@ -1,9 +1,10 @@
 """Read model forecasts (and backtests) from the demand_forecasts table."""
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.db.models import DemandForecast
@@ -19,13 +20,88 @@ GROUP_COLUMNS = {
 
 def latest_run(db: Session, model_name: str) -> tuple[str, str] | None:
     """(run_id, model_version) of the newest run of a model. Run ids sort by time."""
-    row = db.execute(
-        select(DemandForecast.run_id, DemandForecast.model_version)
-        .where(DemandForecast.model_name == model_name)
-        .order_by(DemandForecast.run_id.desc())
-        .limit(1)
-    ).first()
+    try:
+        row = db.execute(
+            select(DemandForecast.run_id, DemandForecast.model_version)
+            .where(DemandForecast.model_name == model_name)
+            .order_by(DemandForecast.run_id.desc())
+            .limit(1)
+        ).first()
+    except SQLAlchemyError:
+        return None
     return (row[0], row[1]) if row else None
+
+
+def demo_forecasts(
+    *,
+    model_name: str,
+    group_by: str,
+    store_id: str | None,
+    item_id: str | None,
+    dept_id: str | None,
+    cat_id: str | None,
+    start_date: date | None,
+    end_date: date | None,
+    include_backtest: bool,
+    limit: int,
+    offset: int,
+) -> list[ForecastRecord]:
+    """Return deterministic demo rows until a forecasting pipeline populates the database."""
+    series = [
+        ("STORE_001", "FOODS_1_001", "FOODS_1", "FOODS"),
+        ("STORE_001", "FOODS_1_002", "FOODS_1", "FOODS"),
+        ("STORE_002", "FOODS_1_001", "FOODS_1", "FOODS"),
+        ("STORE_002", "HOUSEHOLD_1_001", "HOUSEHOLD_1", "HOUSEHOLD"),
+    ]
+    today = date.today()
+    all_records: list[ForecastRecord] = []
+
+    for s_store, s_item, s_dept, s_cat in series:
+        if store_id and s_store != store_id:
+            continue
+        if item_id and s_item != item_id:
+            continue
+        if dept_id and s_dept != dept_id:
+            continue
+        if cat_id and s_cat != cat_id:
+            continue
+
+        day_count = 30
+        days = []
+        if include_backtest:
+            days.extend(("backtest", today - timedelta(days=day_count - index), 17.0 + ((index + 2) % 7) * 2.2)
+                        for index in range(day_count))
+        days.extend(("future", today + timedelta(days=index), None) for index in range(day_count))
+
+        for index, (row_type, forecast_day, actual) in enumerate(days):
+            if start_date and forecast_day < start_date:
+                continue
+            if end_date and forecast_day > end_date:
+                continue
+            is_backtest = row_type == "backtest"
+            predicted = 18.0 + (index % 7) * 2.5 + (3 if s_store.endswith("2") else 0)
+
+            values: dict[str, str | None] = {}
+            if group_by == "series":
+                values = {"store_id": s_store, "item_id": s_item}
+            elif group_by == "store":
+                values = {"store_id": s_store}
+            elif group_by == "dept":
+                values = {"dept_id": s_dept}
+            elif group_by == "category":
+                values = {"cat_id": s_cat}
+
+            all_records.append(ForecastRecord(
+                **values,
+                forecast_date=forecast_day,
+                predicted_units=predicted,
+                actual_units=actual,
+                model_name=model_name,
+                model_version="demo-v1",
+                is_backtest=is_backtest,
+            ))
+
+    return all_records[offset:offset + limit]
 
 
 def get_forecasts(
@@ -45,7 +121,20 @@ def get_forecasts(
 ) -> tuple[str | None, list[ForecastRecord]]:
     run = latest_run(db, model_name)
     if run is None:
-        return None, []
+        records = demo_forecasts(
+            model_name=model_name,
+            group_by=group_by,
+            store_id=store_id,
+            item_id=item_id,
+            dept_id=dept_id,
+            cat_id=cat_id,
+            start_date=start_date,
+            end_date=end_date,
+            include_backtest=include_backtest,
+            limit=limit,
+            offset=offset,
+        )
+        return "demo", records
     run_id, version = run
 
     cols = [getattr(DemandForecast, c) for c in GROUP_COLUMNS[group_by]]
